@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>订单详情</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Flowbite CSS & JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { background: linear-gradient(135deg, #FFF8E7 0%, #FFDAB9 100%); }
+        .warm-card { background: #FFF6E0; border: 1.5px solid #FFE0B2; box-shadow: 0 4px 24px #FFE0B2; }
+        .warm-btn { background: linear-gradient(90deg, #FFB347 0%, #FFD580 100%); color: #fff; }
+        .warm-btn:hover { background: linear-gradient(90deg, #FFA726 0%, #FFC371 100%); }
+        .warm-table th { background: #FFE0B2; color: #E29547; }
+        .warm-table tr { background: #FFF8E7; }
+        .warm-table tr:nth-child(even) { background: #FFF3D1; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+<div class="w-full max-w-2xl mx-auto px-2 py-10">
+    <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-500 to-blue-300 text-white text-2xl font-bold px-8 py-6">订单详情</div>
+        <div class="p-8">
+            {% if orders %}
+            <div class="overflow-x-auto">
+            <table class="min-w-full text-base text-gray-700">
+                <thead>
+                    <tr class="bg-blue-100 text-blue-700">
+                        <th class="py-3 px-4 font-semibold text-left">商品</th>
+                        <th class="py-3 px-4 font-semibold text-left">单价</th>
+                        <th class="py-3 px-4 font-semibold text-left">数量</th>
+                        <th class="py-3 px-4 font-semibold text-left">小计</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr class="border-b border-blue-100 hover:bg-blue-50 transition">
+                        <td class="py-3 px-4">{{ order.description }}</td>
+                        <td class="py-3 px-4">￥{{ '%.2f' % order.unit_cost }}</td>
+                        <td class="py-3 px-4">{{ order.quantity }}</td>
+                        <td class="py-3 px-4">￥{{ '%.2f' % order.total_cost }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="bg-blue-50 font-bold text-blue-700 text-lg">
+                        <td colspan="3" class="py-3 px-4 text-right">总价：</td>
+                        <td class="py-3 px-4">￥{{ '%.2f' % total }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+            {% else %}
+            <p class="text-red-500 text-lg">没有订单信息！</p>
+            {% endif %}
+            <div class="flex justify-center mt-8 gap-4">
+                <a href="/" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full px-8 py-3 text-lg shadow-lg transition-all duration-200">返回首页</a>
+                <a href="/pay" class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold rounded-full px-8 py-3 text-lg shadow-lg transition-all duration-200">去支付</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

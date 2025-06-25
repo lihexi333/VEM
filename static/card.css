@@ -1,0 +1,322 @@
+/* 现代蓝色主题卡片 */
+.card-uiverse {
+  position: relative;
+  width: 220px;
+  height: 320px;
+  background: rgba(26, 26, 46, 0.95);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  font-weight: 600;
+  border-radius: 20px;
+  cursor: pointer;
+  margin: 1rem auto;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  border: 2px solid rgba(74, 144, 226, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.card-uiverse::before,
+.card-uiverse::after {
+  position: absolute;
+  content: "";
+  width: 20%;
+  height: 20%;
+  background: #4a90e2;
+  opacity: 0.1;
+  transition: all 0.5s;
+  z-index: 1;
+}
+
+.card-uiverse::before {
+  top: 0;
+  right: 0;
+  border-radius: 0 20px 0 100%;
+}
+
+.card-uiverse::after {
+  bottom: 0;
+  left: 0;
+  border-radius: 0 100% 0 20px;
+}
+
+.card-uiverse:hover {
+  transform: translateY(-5px);
+  border-color: #4a90e2;
+  box-shadow: 0 15px 40px rgba(74, 144, 226, 0.2);
+}
+
+.card-uiverse:hover::before,
+.card-uiverse:hover::after {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  opacity: 0.15;
+}
+
+.card-content, .card-hover-content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.card-content {
+  opacity: 1;
+  color: #fff;
+}
+
+.card-hover-content {
+  opacity: 0;
+  color: #fff;
+  background: rgba(26, 26, 46, 0.98);
+  border-radius: 20px;
+  transform: translateY(10px);
+}
+
+.card-uiverse:hover .card-content {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.card-uiverse:hover .card-hover-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card-title {
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.badge-price {
+  background: linear-gradient(135deg, #4a90e2 0%, #64b5f6 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  border-radius: 20px;
+  padding: 0.6em 1.2em;
+  margin-bottom: 0.8em;
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+}
+
+.badge.bg-success {
+  background: #4a90e2 !important;
+  color: #fff !important;
+  font-weight: 500;
+  border-radius: 20px;
+  margin: 0.2em;
+  transition: all 0.3s;
+}
+
+.badge.bg-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+}
+
+.text-muted {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.card-content i, .card-title i {
+  color: #4a90e2;
+  font-size: 2.2rem;
+  margin-bottom: 0.8em;
+  transition: all 0.3s;
+}
+
+.card-uiverse:hover .card-content i {
+  transform: scale(1.1);
+}
+
+.select-area {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 576px) {
+  .card-uiverse {
+    width: 95vw;
+    height: 220px;
+  }
+  
+  .card-content, .card-hover-content {
+    padding: 1rem;
+  }
+  
+  .card-content i {
+    font-size: 1.8rem;
+    margin-bottom: 0.5em;
+  }
+}
+
+/* 温馨主题卡片 */
+.card-uiverse-warm {
+  position: relative;
+  width: 220px;
+  height: 320px;
+  background: #FFF8E7;
+  color: #6B4F27;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  font-weight: 600;
+  border-radius: 20px;
+  cursor: pointer;
+  margin: 1rem auto;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px #EED9C4;
+  overflow: hidden;
+  border: 2px solid #FFDAB9;
+  backdrop-filter: blur(6px);
+}
+
+.card-uiverse-warm::before,
+.card-uiverse-warm::after {
+  position: absolute;
+  content: "";
+  width: 20%;
+  height: 20%;
+  background: #FFDAB9;
+  opacity: 0.12;
+  transition: all 0.5s;
+  z-index: 1;
+}
+
+.card-uiverse-warm::before {
+  top: 0;
+  right: 0;
+  border-radius: 0 20px 0 100%;
+}
+
+.card-uiverse-warm::after {
+  bottom: 0;
+  left: 0;
+  border-radius: 0 100% 0 20px;
+}
+
+.card-uiverse-warm:hover {
+  transform: translateY(-5px);
+  border-color: #F7C873;
+  box-shadow: 0 15px 40px #FFDAB9;
+}
+
+.card-uiverse-warm:hover::before,
+.card-uiverse-warm:hover::after {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  opacity: 0.18;
+}
+
+.card-uiverse-warm .card-content, .card-uiverse-warm .card-hover-content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.card-uiverse-warm .card-content {
+  opacity: 1;
+  color: #6B4F27;
+}
+
+.card-uiverse-warm .card-hover-content {
+  opacity: 0;
+  color: #6B4F27;
+  background: #FFDAB9;
+  border-radius: 20px;
+  transform: translateY(10px);
+}
+
+.card-uiverse-warm:hover .card-content {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.card-uiverse-warm:hover .card-hover-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card-uiverse-warm .card-title {
+  color: #E29547;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.card-uiverse-warm .badge-price {
+  background: linear-gradient(135deg, #FFDAB9 0%, #FFF3CD 100%);
+  color: #6B4F27;
+  font-size: 1.1rem;
+  border-radius: 20px;
+  padding: 0.6em 1.2em;
+  margin-bottom: 0.8em;
+  box-shadow: 0 4px 15px #FFDAB9;
+}
+
+.card-uiverse-warm .badge.bg-success {
+  background: #FFDAB9 !important;
+  color: #6B4F27 !important;
+  font-weight: 500;
+  border-radius: 20px;
+  margin: 0.2em;
+  transition: all 0.3s;
+}
+
+.card-uiverse-warm .badge.bg-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px #FFDAB9;
+}
+
+.card-uiverse-warm .text-muted {
+  color: #BFA980 !important;
+}
+
+.card-uiverse-warm .card-content i, .card-uiverse-warm .card-title i {
+  color: #E29547;
+  font-size: 2.2rem;
+  margin-bottom: 0.8em;
+  transition: all 0.3s;
+}
+
+.card-uiverse-warm:hover .card-content i {
+  transform: scale(1.1);
+}
+
+@media (max-width: 576px) {
+  .card-uiverse-warm {
+    width: 95vw;
+    height: 220px;
+  }
+  .card-uiverse-warm .card-content, .card-uiverse-warm .card-hover-content {
+    padding: 1rem;
+  }
+  .card-uiverse-warm .card-content i {
+    font-size: 1.8rem;
+    margin-bottom: 0.5em;
+  }
+}

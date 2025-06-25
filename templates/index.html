@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>智能售货机系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Flowbite CSS & JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFDAB9 100%);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .warm-card {
+            background: #FFF6E0;
+            border: 1.5px solid #FFE0B2;
+            box-shadow: 0 4px 24px #FFE0B2;
+        }
+        .warm-btn {
+            background: linear-gradient(90deg, #FFB347 0%, #FFD580 100%);
+            color: #fff;
+        }
+        .warm-btn:hover {
+            background: linear-gradient(90deg, #FFA726 0%, #FFC371 100%);
+        }
+        .warm-table th {
+            background: #FFE0B2;
+            color: #E29547;
+        }
+        .warm-table tr {
+            background: #FFF8E7;
+        }
+        .warm-table tr:nth-child(even) {
+            background: #FFF3D1;
+        }
+        .warm-navbar {
+            background: #FFF6E0;
+            border-bottom: 2px solid #FFDAB9;
+        }
+    </style>
+</head>
+<body class="min-h-screen" style="background:linear-gradient(135deg,#FFF8E7 0%,#FFDAB9 100%);">
+<!-- Flowbite Navbar -->
+<nav class="border-b bg-white sticky top-0 z-30">
+  <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between p-4">
+    <a href="#" class="flex items-center space-x-2">
+      <i class="fa-solid fa-store text-2xl text-blue-600"></i>
+      <span class="self-center text-2xl font-bold text-blue-600">智能售货机</span>
+    </a>
+    <div class="flex items-center gap-4">
+      <a href="/history" class="text-blue-600 hover:underline flex items-center"><i class="fa-solid fa-clock-rotate-left mr-1"></i>历史订单</a>
+      <button data-drawer-target="cartDrawer" data-drawer-show="cartDrawer" aria-controls="cartDrawer" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none"><i class="fa-solid fa-cart-shopping mr-2"></i>购物车</button>
+    </div>
+  </div>
+</nav>
+<!-- 房子容器开始 -->
+<div class="house-container max-w-7xl mx-auto mb-8 flex flex-col items-center">
+  <!-- 屋顶 -->
+  <div class="w-full flex justify-center" style="height: 5vw; min-height: 20px; max-height: 32px;">
+    <div style="
+      width: 100%;
+      max-width: 100%;
+      height: 0;
+      border-left: 50% solid transparent;
+      border-right: 50% solid transparent;
+      border-bottom: 32px solid #FFDAB9;
+      filter: drop-shadow(0 4px 12px #EED9C4);
+      position: relative;
+      z-index: 1;
+    "></div>
+  </div>
+  <!-- 房体 -->
+  <div class="house-body w-full rounded-3xl shadow-xl p-6" style="background: #FFF8E7; min-height: 80vh; border: 3px solid #EED9C4; box-shadow: 0 8px 32px #EED9C4; margin-top: 0;">
+    <!-- 分类Tabs -->
+    <div class="px-2 mt-4">
+      <ul class="flex flex-nowrap overflow-x-auto scrollbar-hide text-base font-medium border-b border-yellow-200" id="categoryTabs" role="tablist">
+        <li class="mr-2"><a href="#recommend" class="inline-block px-4 py-2 rounded-t-lg text-orange-600 border-b-2 border-orange-400 active" role="tab">为你推荐</a></li>
+        <li class="mr-2"><a href="#health" class="inline-block px-4 py-2 rounded-t-lg text-gray-500 hover:text-orange-600 hover:border-orange-400 border-b-2 border-transparent" role="tab">健康推荐</a></li>
+        {% for category in categories.keys() %}
+        <li class="mr-2"><a href="#category_{{ loop.index }}" class="inline-block px-4 py-2 rounded-t-lg text-gray-500 hover:text-orange-600 hover:border-orange-400 border-b-2 border-transparent" role="tab"><i class="fa-solid {{ category_icons[category] }} mr-1"></i>{{ category }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- 推荐专区 -->
+    <div id="recommend" class="pt-6">
+      <div class="flex items-center gap-2 mb-4 text-orange-600 text-xl font-bold"><i class="fa-solid fa-star"></i>为你推荐</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for item in recommend %}
+        <div class="bg-white rounded-xl shadow hover:shadow-lg transition flex flex-col card-uiverse-warm">
+          <div class="flex flex-col items-center p-5">
+            <i class="fa-solid {{ category_icons[item.category] }} text-3xl text-orange-400 mb-2"></i>
+            <div class="text-lg font-semibold text-orange-700 mb-1">{{ item.name }}</div>
+            <span class="bg-gradient-to-r from-orange-400 to-yellow-200 text-white text-sm font-bold rounded-full px-4 py-1 mb-2">￥{{ '%.2f' % item.price }}</span>
+            <div class="text-yellow-700 text-xs mb-1">热量: {{ item.calories }} kcal</div>
+            <div class="text-yellow-700 text-xs mb-1">营养: {{ item.nutrition }}</div>
+            <div class="mb-2 flex flex-wrap gap-1">
+              {% for tag in item.tags %}
+              <span class="bg-yellow-100 text-orange-600 text-xs rounded-full px-2 py-0.5">{{ tag }}</span>
+              {% endfor %}
+            </div>
+            <div class="flex items-center gap-2 mt-2">
+              <input type="number" min="1" max="20" value="1" class="quantity-input block w-16 rounded-lg border border-yellow-200 bg-yellow-50 p-1 text-center text-sm focus:ring-2 focus:ring-orange-400" data-code="{{ item.code }}">
+              <button type="button" class="select-btn text-white bg-orange-400 hover:bg-orange-500 font-medium rounded-lg text-sm px-4 py-1.5" data-code="{{ item.code }}">选择</button>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <!-- 健康推荐专区 -->
+    <div id="health" class="pt-8">
+      <div class="flex items-center gap-2 mb-4 text-orange-600 text-xl font-bold"><i class="fa-solid fa-heart-pulse"></i>健康推荐</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for item in health_products %}
+        <div class="bg-white rounded-xl shadow hover:shadow-lg transition flex flex-col card-uiverse-warm">
+          <div class="flex flex-col items-center p-5">
+            <i class="fa-solid {{ category_icons[item.category] }} text-3xl text-orange-400 mb-2"></i>
+            <div class="text-lg font-semibold text-orange-700 mb-1">{{ item.name }}</div>
+            <span class="bg-gradient-to-r from-orange-400 to-yellow-200 text-white text-sm font-bold rounded-full px-4 py-1 mb-2">￥{{ '%.2f' % item.price }}</span>
+            <div class="text-yellow-700 text-xs mb-1">热量: {{ item.calories }} kcal</div>
+            <div class="text-yellow-700 text-xs mb-1">营养: {{ item.nutrition }}</div>
+            <div class="mb-2 flex flex-wrap gap-1">
+              {% for tag in item.tags %}
+              <span class="bg-yellow-100 text-orange-600 text-xs rounded-full px-2 py-0.5">{{ tag }}</span>
+              {% endfor %}
+            </div>
+            <div class="flex items-center gap-2 mt-2">
+              <input type="number" min="1" max="20" value="1" class="quantity-input block w-16 rounded-lg border border-yellow-200 bg-yellow-50 p-1 text-center text-sm focus:ring-2 focus:ring-orange-400" data-code="{{ item.code }}">
+              <button type="button" class="select-btn text-white bg-orange-400 hover:bg-orange-500 font-medium rounded-lg text-sm px-4 py-1.5" data-code="{{ item.code }}">选择</button>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <!-- 分类专区 -->
+    {% for category, items in categories.items() %}
+    <div id="category_{{ loop.index }}" class="pt-8">
+      <div class="flex items-center gap-2 mb-4 text-orange-600 text-xl font-bold"><i class="fa-solid {{ category_icons[category] }}"></i>{{ category }}</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for item in items %}
+        <div class="bg-white rounded-xl shadow hover:shadow-lg transition flex flex-col card-uiverse-warm">
+          <div class="flex flex-col items-center p-5">
+            <i class="fa-solid {{ category_icons[item.category] }} text-3xl text-orange-400 mb-2"></i>
+            <div class="text-lg font-semibold text-orange-700 mb-1">{{ item.name }}</div>
+            <span class="bg-gradient-to-r from-orange-400 to-yellow-200 text-white text-sm font-bold rounded-full px-4 py-1 mb-2">￥{{ '%.2f' % item.price }}</span>
+            <div class="text-yellow-700 text-xs mb-1">热量: {{ item.calories }} kcal</div>
+            <div class="text-yellow-700 text-xs mb-1">营养: {{ item.nutrition }}</div>
+            <div class="mb-2 flex flex-wrap gap-1">
+              {% for tag in item.tags %}
+              <span class="bg-yellow-100 text-orange-600 text-xs rounded-full px-2 py-0.5">{{ tag }}</span>
+              {% endfor %}
+            </div>
+            <div class="flex items-center gap-2 mt-2">
+              <input type="number" min="1" max="20" value="1" class="quantity-input block w-16 rounded-lg border border-yellow-200 bg-yellow-50 p-1 text-center text-sm focus:ring-2 focus:ring-orange-400" data-code="{{ item.code }}">
+              <button type="button" class="select-btn text-white bg-orange-400 hover:bg-orange-500 font-medium rounded-lg text-sm px-4 py-1.5" data-code="{{ item.code }}">选择</button>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+    <form id="orderForm" action="/order" method="post" style="display:none;"></form>
+  </div>
+</div>
+<!-- 房子容器结束 -->
+<!-- Flowbite Drawer购物车 -->
+<div id="cartDrawer" class="fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-white w-80 dark:bg-gray-800" tabindex="-1" aria-labelledby="cartDrawerLabel">
+  <h5 id="cartDrawerLabel" class="text-base font-semibold text-gray-700 dark:text-gray-200 mb-4">🛒 已选商品</h5>
+  <div id="cartItems"></div>
+  <div class="mt-2 font-bold text-blue-600" id="cartTotal"></div>
+  <button class="btn btn-sm bg-red-500 text-white rounded-lg px-3 py-1 mt-2" onclick="clearCart()">清空</button>
+  <button class="btn bg-blue-600 text-white rounded-lg px-3 py-2 mt-4 w-full" id="submitOrderBtn" type="button">提交订单</button>
+  <button type="button" data-drawer-hide="cartDrawer" aria-controls="cartDrawer" class="absolute top-2.5 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" >
+    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+    <span class="sr-only">Close menu</span>
+  </button>
+</div>
+<!-- Toast 容器 -->
+<div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 items-end"></div>
+<!-- 返回顶部按钮 -->
+<button id="backToTopBtn" title="返回顶部" style="position:fixed;right:32px;bottom:32px;z-index:9999;display:none;width:56px;height:56px;border-radius:50%;background:#FFDAB9;color:#E29547;box-shadow:0 4px 18px #EED9C4;border:none;outline:none;cursor:pointer;transition:background 0.2s;">
+  <i class="fa-solid fa-arrow-up" style="font-size:1.6rem;"></i>
+</button>
+<!-- 选项弹窗 -->
+<div id="optionModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30 hidden">
+  <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-xs warm-card relative">
+    <button id="closeOptionModal" class="absolute top-2 right-2 text-gray-400 hover:text-orange-400 text-xl">&times;</button>
+    <div class="text-lg font-bold text-orange-600 mb-2" id="optionModalTitle"></div>
+    <form id="optionForm">
+      <div id="optionFields"></div>
+      <div class="mt-4 flex items-center gap-2">
+        <span class="text-orange-600 font-bold">单价：</span>
+        <span id="optionPrice" class="text-xl text-orange-500 font-bold"></span>
+      </div>
+      <div class="mt-4 flex gap-2">
+        <input type="number" min="1" max="20" value="1" id="optionQuantity" class="block w-16 rounded-lg border border-yellow-200 bg-yellow-50 p-1 text-center text-sm focus:ring-2 focus:ring-orange-400">
+        <button type="submit" class="warm-btn font-bold rounded-lg px-4 py-2 text-base shadow">加入购物车</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- 智能客服浮窗 -->
+<div id="chat-float-btn" style="position:fixed;left:32px;bottom:32px;z-index:9999;">
+  <button onclick="toggleChatWindow()" style="width:56px;height:56px;border-radius:50%;background:#4F8CFF;color:#fff;box-shadow:0 4px 18px #B3D1FF;border:none;outline:none;cursor:pointer;font-size:2rem;">
+    <i class="fa-solid fa-comments"></i>
+  </button>
+</div>
+<div id="chat-window" style="display:none;position:fixed;left:32px;bottom:100px;width:340px;height:480px;z-index:10000;background:#fff;border-radius:18px;box-shadow:0 8px 32px #B3D1FF;overflow:hidden;flex-direction:column;">
+  <div style="background:linear-gradient(90deg,#4F8CFF,#8EC5FC);color:#fff;padding:14px 18px;font-weight:bold;display:flex;justify-content:space-between;align-items:center;">
+    智能客服
+    <span style="cursor:pointer;" onclick="toggleChatWindow()">&times;</span>
+  </div>
+  <div id="chat-messages" style="flex:1;overflow-y:auto;padding:16px 12px 12px 12px;height:340px;background:#F6FAFF;"></div>
+  <form id="chat-form" style="display:flex;gap:8px;padding:12px;background:#F6FAFF;border-top:1px solid #E3EFFF;">
+    <input id="chat-input" type="text" placeholder="请输入您的问题..." autocomplete="off" style="flex:1;border-radius:8px;border:1px solid #B3D1FF;padding:8px 12px;">
+    <button type="submit" style="background:#4F8CFF;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-weight:bold;">发送</button>
+  </form>
+</div>
+<script>
+let cart = {};
+function renderCart() {
+    const cartItemsDiv = document.getElementById('cartItems');
+    const cartTotalDiv = document.getElementById('cartTotal');
+    cartItemsDiv.innerHTML = '';
+    let total = 0;
+    for (const code in cart) {
+        const item = cart[code];
+        total += item.price * item.quantity;
+        cartItemsDiv.innerHTML += `
+        <div class="flex items-center mb-2">
+            <span class="font-bold text-orange-600">${item.name}</span>
+            <input type="number" min="1" max="20" value="${item.quantity}" class="form-input w-14 mx-2 rounded-lg border border-gray-200 bg-gray-50 text-center text-sm" onchange="updateCartQty('${code}', this.value)">
+            <span class="mr-2">￥${item.price.toFixed(2)}</span>
+            <button class="text-red-500 hover:underline ml-2 text-sm" onclick="removeFromCart('${code}')">删除</button>
+        </div>`;
+    }
+    cartTotalDiv.innerHTML = '总价：￥' + total.toFixed(2);
+}
+function addToCart(code, name, price, quantity) {
+    if (cart[code]) {
+        cart[code].quantity += quantity;
+    } else {
+        cart[code] = {name, price, quantity};
+    }
+    renderCart();
+}
+function updateCartQty(code, qty) {
+    qty = parseInt(qty) || 1;
+    if (cart[code]) {
+        cart[code].quantity = qty;
+        renderCart();
+    }
+}
+function removeFromCart(code) {
+    delete cart[code];
+    renderCart();
+}
+function clearCart() {
+    cart = {};
+    renderCart();
+}
+function showToast(msg) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'flex items-center px-4 py-2 mb-2 text-white bg-blue-600 rounded-lg shadow-lg animate-fade-in-up';
+    toast.innerHTML = `<span class='mr-2'><i class='fa-solid fa-circle-check text-green-300'></i></span>${msg}`;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('opacity-0');
+        setTimeout(() => container.removeChild(toast), 400);
+    }, 1800);
+}
+// 动画样式
+const style = document.createElement('style');
+style.innerHTML = `
+@keyframes fade-in-up { from { opacity:0; transform:translateY(30px);} to { opacity:1; transform:translateY(0);} }
+.animate-fade-in-up { animation: fade-in-up 0.4s cubic-bezier(.4,0,.2,1); }
+.opacity-0 { opacity:0; transition:opacity 0.4s; }
+`;
+document.head.appendChild(style);
+// 现做饮品选项配置
+const madeToOrderOptions = {
+  'milk_tea': {
+    title: '奶茶配料选择',
+    base: 8.0,
+    fields: [
+      {type:'radio', name:'sweetness', label:'甜度', options:['全糖','七分糖','五分糖','无糖'], default:'全糖'},
+      {type:'checkbox', name:'ice', label:'加冰（+1元）', price:1}
+    ]
+  },
+  'fresh_coffee': {
+    title: '咖啡配料选择',
+    base: 10.0,
+    fields: [
+      {type:'checkbox', name:'cream', label:'加奶油（+2元）', price:2},
+      {type:'checkbox', name:'ice', label:'加冰（+1元）', price:1}
+    ]
+  },
+  'oolong_tea': {
+    title: '乌龙茶配料选择',
+    base: 4.0,
+    fields: [
+      {type:'checkbox', name:'ice', label:'加冰（+1元）', price:1}
+    ]
+  }
+};
+// 商品code到商品信息映射
+const productMap = {{ product_map_json | safe }};
+// 选项弹窗逻辑
+let currentOptionCode = null;
+function showOptionModal(code) {
+  const opt = madeToOrderOptions[code];
+  if (!opt) return;
+  currentOptionCode = code;
+  document.getElementById('optionModalTitle').textContent = opt.title;
+  let html = '';
+  opt.fields.forEach(f => {
+    if(f.type==='radio'){
+      html += `<div class='mb-2'><div class='font-bold mb-1'>${f.label}</div>`;
+      f.options.forEach(val => {
+        html += `<label class='mr-3'><input type='radio' name='${f.name}' value='${val}' ${val===f.default?'checked':''}> ${val}</label>`;
+      });
+      html += '</div>';
+    } else if(f.type==='checkbox') {
+      html += `<div class='mb-2'><label><input type='checkbox' name='${f.name}' value='1' data-price='${f.price||0}'> ${f.label}</label></div>`;
+    }
+  });
+  document.getElementById('optionFields').innerHTML = html;
+  document.getElementById('optionPrice').textContent = '￥' + opt.base.toFixed(2);
+  document.getElementById('optionQuantity').value = 1;
+  document.getElementById('optionModal').classList.remove('hidden');
+  updateOptionPrice();
+}
+function closeOptionModal() {
+  document.getElementById('optionModal').classList.add('hidden');
+}
+document.getElementById('closeOptionModal').onclick = closeOptionModal;
+document.getElementById('optionModal').addEventListener('click', function(e){
+  if(e.target===this) closeOptionModal();
+});
+document.getElementById('optionFields').addEventListener('change', updateOptionPrice);
+document.getElementById('optionQuantity').addEventListener('input', updateOptionPrice);
+function updateOptionPrice() {
+  if(!currentOptionCode) return;
+  const opt = madeToOrderOptions[currentOptionCode];
+  let price = opt.base;
+  opt.fields.forEach(f => {
+    if(f.type==='checkbox'){
+      const checked = document.querySelector(`#optionFields input[name='${f.name}']`).checked;
+      if(checked) price += f.price||0;
+    }
+  });
+  document.getElementById('optionPrice').textContent = '￥' + price.toFixed(2);
+}
+document.getElementById('optionForm').onsubmit = function(e){
+  e.preventDefault();
+  // 获取选项
+  const form = e.target;
+  let desc = productMap[currentOptionCode].name;
+  let price = madeToOrderOptions[currentOptionCode].base;
+  let detail = [];
+  madeToOrderOptions[currentOptionCode].fields.forEach(f => {
+    if(f.type==='radio'){
+      const val = form.querySelector(`input[name='${f.name}']:checked`).value;
+      detail.push(f.label+':'+val);
+    } else if(f.type==='checkbox'){
+      const checked = form.querySelector(`input[name='${f.name}']`).checked;
+      if(checked){
+        detail.push(f.label.replace(/（.*?）/g, ''));
+        price += f.price||0;
+      }
+    }
+  });
+  const qty = parseInt(document.getElementById('optionQuantity').value)||1;
+  addToCart(currentOptionCode + '_' + detail.join('_'), desc + (detail.length?'（'+detail.join('，')+'）':''), price, qty);
+  closeOptionModal();
+  showToast('已加入购物车: '+desc);
+};
+function isMadeToOrder(code){
+  return !!madeToOrderOptions[code];
+}
+document.querySelectorAll('.select-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const code = this.getAttribute('data-code');
+    if(isMadeToOrder(code)){
+      showOptionModal(code);
+    }else{
+      const card = this.closest('div.flex-col');
+      const name = card.querySelector('div.text-lg').textContent;
+      const price = parseFloat(card.querySelector('span.bg-gradient-to-r').textContent.replace('￥',''));
+      const qtyInput = card.querySelector('.quantity-input');
+      const quantity = parseInt(qtyInput.value) || 1;
+      addToCart(code, name, price, quantity);
+      showToast(`用户已选择 ${name} * ${quantity}`);
+    }
+  });
+});
+document.querySelectorAll('#categoryTabs a').forEach(link => {
+    link.addEventListener('click', function(e){
+        document.querySelectorAll('#categoryTabs a').forEach(l=>l.classList.remove('text-blue-600','border-blue-600','active'));
+        this.classList.add('text-blue-600','border-blue-600','active');
+        const target = document.querySelector(this.getAttribute('href'));
+        if(target) target.scrollIntoView({behavior:'smooth'});
+    });
+});
+// 返回顶部按钮显示/隐藏逻辑
+window.addEventListener('scroll', function() {
+  const btn = document.getElementById('backToTopBtn');
+  if (window.scrollY > 300) {
+    btn.style.display = 'block';
+  } else {
+    btn.style.display = 'none';
+  }
+});
+document.getElementById('backToTopBtn').onclick = function() {
+  window.scrollTo({top:0, behavior:'smooth'});
+};
+document.getElementById('submitOrderBtn').onclick = function() {
+    const form = document.getElementById('orderForm');
+    form.innerHTML = '';
+    for (const code in cart) {
+        // 现做饮品的 code 可能本身有下划线，比如 milk_tea
+        // 所以要和 product_map 对齐
+        let baseCode = code;
+        let detail = '';
+        // 用 productMap 判断
+        if (!(baseCode in productMap)) {
+            // 不是原始商品 code，说明后面有配料
+            // 从后往前找，找到第一个在 productMap 里的 code
+            const parts = code.split('_');
+            for (let i = parts.length; i > 0; i--) {
+                const tryCode = parts.slice(0, i).join('_');
+                if (tryCode in productMap) {
+                    baseCode = tryCode;
+                    detail = parts.slice(i).join('_');
+                    break;
+                }
+            }
+        }
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'beverages';
+        input.value = baseCode + (detail ? '|' + detail : '') + ':' + cart[code].quantity;
+        form.appendChild(input);
+    }
+    if (Object.keys(cart).length === 0) {
+        alert('请至少选择一个商品！');
+        return;
+    }
+    form.submit();
+};
+let chatVisible = false;
+let chatHistory = [
+  {role: "assistant", content: "您好，我是智能客服，有什么可以帮您？"}
+];
+
+function toggleChatWindow() {
+  chatVisible = !chatVisible;
+  document.getElementById('chat-window').style.display = chatVisible ? 'flex' : 'none';
+  if (chatVisible) renderChat();
+}
+
+function renderChat() {
+  const msgDiv = document.getElementById('chat-messages');
+  msgDiv.innerHTML = '';
+  chatHistory.forEach(msg => {
+    const bubble = document.createElement('div');
+    bubble.style.margin = '8px 0';
+    bubble.style.display = 'flex';
+    bubble.style.justifyContent = msg.role === 'user' ? 'flex-end' : 'flex-start';
+    let contentHtml;
+    if (msg.role === 'assistant') {
+      contentHtml = marked.parse(msg.content);
+    } else {
+      contentHtml = msg.content.replace(/\n/g, '<br>');
+    }
+    bubble.innerHTML = `<div style="
+      max-width: 80%; 
+      background: ${msg.role === 'user' ? '#4F8CFF' : '#E3EFFF'};
+      color: ${msg.role === 'user' ? '#fff' : '#333'};
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-size: 15px;
+      box-shadow: 0 2px 8px #E3EFFF;
+      word-break: break-all;
+      ">
+      ${contentHtml}
+    </div>`;
+    msgDiv.appendChild(bubble);
+  });
+  msgDiv.scrollTop = msgDiv.scrollHeight;
+}
+
+document.getElementById('chat-form').onsubmit = async function(e) {
+  e.preventDefault();
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  chatHistory.push({role: "user", content: text});
+  renderChat();
+  input.value = '';
+  // 显示loading
+  chatHistory.push({role: "assistant", content: "正在思考..."});
+  renderChat();
+  try {
+    const resp = await fetch('/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({messages: chatHistory.filter(m => m.role !== 'assistant' || m.content !== '正在思考...')})
+    });
+    const data = await resp.json();
+    // 替换最后一条"正在思考..."
+    chatHistory[chatHistory.length - 1] = {role: "assistant", content: data.reply};
+    renderChat();
+  } catch (err) {
+    chatHistory[chatHistory.length - 1] = {role: "assistant", content: "客服暂时不可用，请稍后再试。"};
+    renderChat();
+  }
+};
+</script>
+</body>
+</html>
