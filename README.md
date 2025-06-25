@@ -1,5 +1,5 @@
 # VEM
-一个智能售货机系统
+一个智能售货机系统，有一些内容是参考了[智谱清言](https://github.com/ZhipuAI/chatglm-plugin)的代码，感谢开源！
 
 ## 安装与运行
 
